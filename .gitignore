@@ -1,0 +1,45 @@
+Gemfile.lock
+
+# Jeweler gemspec
+*.gemspec
+
+# rdoc generated
+rdoc
+
+# yard generated
+doc
+.yardoc
+
+# rcov generated
+coverage
+coverage.data
+
+# bundler
+.bundle
+
+# jeweler generated
+pkg
+
+# Raw gems
+.gem
+
+# For MacOS:
+.DS_Store
+
+# For TextMate
+*.tmproj
+tmtags
+
+# For emacs:
+*~
+\#*
+.\#*
+
+# For vim:
+*.swp
+
+# For redcar:
+.redcar
+
+# For rubinius:
+*.rbc
