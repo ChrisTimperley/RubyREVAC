@@ -1,6 +1,15 @@
 # encoding: utf-8
 require 'CSV'
 
+# Implements the REVAC tuning method (Relevance Estimation and Value
+# Calibration of Evolutionary Algorithm Parameters), proposed by Nannen and
+# Eiben, which provides a fast and rational approach to parameter tuning for
+# meta-heuristics.
+#
+# Although originally designed for finding the optimal parameter setup for
+# evolutionary algorithms, this REVAC implementation may also be used to
+# tune other meta-heuristics, such as Ant Colony Optimisation or Particle
+# Swarm Optimisation.
 module REVAC
 
   # Used to hold the name and range of legal values for a search parameter.
@@ -102,6 +111,9 @@ module REVAC
   # [+vectors+]     The number of parameter vectors in the population.
   # [+h+]           The radius of the partial marginal density function.
   # [+output+]      The path to the output CSV file.
+  #
+  # ==== Returns
+  # A hash containing the `optimal' parameter values for the given problem. 
   def self.tune(parameters, opts = {}, &algorithm)
 
     # Load the default values for any omitted parameters.
@@ -183,6 +195,12 @@ module REVAC
       puts "Generation #{iterations}: #{best_utility}"
 
     end
+
+    # Return the optimal parameter vector as a hash.
+    return Hash[parameters.zip(0...parameters.length).map { |param, index|
+      [param.name, best_vector[index]]
+    }]
+
   end
 
 end
