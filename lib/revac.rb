@@ -19,7 +19,7 @@ module REVAC
   # a given CSV file.
   #
   # ==== Parameters
-  # [+path+]        The path to the output JSON file.
+  # [+path+]        The path to the output CSV file.
   # [+evaluation+]  The current evaluation.
   # [+vector+]      The parameter vector table.
   # [+utility+]     The utility of the given vector.
@@ -190,9 +190,6 @@ module REVAC
       evaluations += 1
       log(opts[:output], evaluations, child, utility[oldest])
       oldest = (oldest + 1) % opts[:vectors]
-
-      # Debugging.
-      puts "Generation #{iterations}: #{best_utility}"
 
     end
 
