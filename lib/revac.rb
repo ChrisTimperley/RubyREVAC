@@ -1,5 +1,5 @@
 # encoding: utf-8
-require 'CSV'
+require 'CSV' unless defined?(CSV)
 
 # Implements the REVAC tuning method (Relevance Estimation and Value
 # Calibration of Evolutionary Algorithm Parameters), proposed by Nannen and
@@ -110,7 +110,8 @@ module REVAC
   # [+runs+]        The number of runs to perform for each vector.
   # [+vectors+]     The number of parameter vectors in the population.
   # [+h+]           The radius of the partial marginal density function.
-  # [+output+]      The path to the output CSV file.
+  # [+log+]         The path to the output CSV file.
+  # [+debug+]       Used to enable / disable evaluation logging to the console.
   #
   # ==== Returns
   # A hash containing the `optimal' parameter values for the given problem. 
@@ -119,9 +120,10 @@ module REVAC
     # Load the default values for any omitted parameters.
     opts[:vectors] ||= 80
     opts[:parents] ||= 40
-    opts[:h] ||= 10
+    opts[:h] ||= 5
     opts[:runs] ||= 5
     opts[:evaluations] ||= 5000
+    opts[:debug] ||= false
 
     # The RNG to use during optimisation.
     random = Random.new
@@ -135,10 +137,10 @@ module REVAC
     iterations = 0
     evaluations = 0
 
-    # Initialise the output CSV file.
-    CSV.open(opts[:output], 'wb') do |f|
+    # Initialise the output CSV file (if one has been given).
+    CSV.open(opts[:log], 'wb') do |f|
       f << ['Evaluation'] + parameters.map { |p| p.name } + ['Utility']
-    end
+    end if opts[:log]
 
     # Draw an initial set of parameter vectors at uniform random from
     # their initial distributions.
@@ -150,7 +152,8 @@ module REVAC
     # the best parameter vector.
     utility = table.map do |v|
       u = evaluate_vector(v, parameters, algorithm, opts[:runs])
-      log(opts[:output], evaluations, v, u)
+      log(opts[:output], evaluations, v, u) if opts[:log]
+      puts "Evaluation #{evaluations}: #{u}" if opts[:debug]
       evaluations += 1
       u
     end
@@ -188,7 +191,8 @@ module REVAC
       # Update evolution statistics and perform logging.
       iterations += 1
       evaluations += 1
-      log(opts[:output], evaluations, child, utility[oldest])
+      log(opts[:output], evaluations, child, utility[oldest]) if opts[:log]
+      puts "Evaluation #{evaluations}: #{utility[oldest]}" if opts[:debug]
       oldest = (oldest + 1) % opts[:vectors]
 
     end
